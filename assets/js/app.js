@@ -111,11 +111,11 @@ listen('click', startBtn, () => {
 listen('keydown', inputObj, (event) => {
     keypressSound.play();
     if (event.key === 'Backspace') event.preventDefault();
-    if (event.key !== randomWordObj.innerText.charAt(0)) event.preventDefault();
+    if (event.key.toLowerCase() !== randomWordObj.innerText.charAt(0)) event.preventDefault();
 });
 
 listen('input', inputObj, (event) => {
-    let char = event.data;
+    let char = event.data.toLowerCase();
     if (randomWordObj.innerText.charAt(0) === char) {
         checkWord(char);
     }
@@ -199,7 +199,7 @@ function disableInput() {
 
 function enableInput() {
     inputObj.disabled = false;
-    inputObj.placeholder = '';
+    inputObj.placeholder = 'Enter the word';
     inputObj.focus();
 }
 
