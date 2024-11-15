@@ -26,7 +26,7 @@ their keyboard to type in the presented words correctly
 * JavaScript
 
 ## Pictures
-! [Start] (./assets/img/game-01.png)
-! [Playing] (./assets/img/game-02.png)
-! [Summary] (./assets/img/game-03.png)
+![Start](https://ladeyekun.github.io/typing-game/assets/img/game-01.png)
+![Playing](https://ladeyekun.github.io/typing-game/assets/img/game-02.png)
+![Summary](https://ladeyekun.github.io/typing-game/assets/img/game-03.png)
 
