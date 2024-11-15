@@ -97,7 +97,6 @@ section {
 
 .game-container {
     width: 500px;
-    /*height: 400px;*/
     padding: 20px;
     border-radius: 5px;
 }
@@ -231,12 +230,11 @@ input[disabled] {
     height: 46px;
     border: none;
     background: transparent;
-    /*background: purple;*/
     color: inherit;
-    cursor: default;
+    cursor: not-allowed;
     outline: none;
     padding: 0;
-  }
+}
 
 
   /*----------------------------------*/

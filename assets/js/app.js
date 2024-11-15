@@ -90,7 +90,7 @@ let lastWordGenerationTime = 0;
 let fastestTime = 0;
 
 let gameStarted = false;
-let totalGameTime = 10;
+let totalGameTime = 99;
 let hits = 0;
 const START = 'start';
 const RESTART = 'restart';
