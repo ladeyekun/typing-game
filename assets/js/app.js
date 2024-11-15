@@ -82,7 +82,8 @@ const dialog = select('.dialog-overlay');
 const summary = select('.details');
 const scores = [];
 const words = [];
-let wordBankCopy = [...wordBank];
+//let wordBankCopy = [...wordBank];
+let wordBankCopy = wordBank.toSorted(() => Math.random() - 0.5);
 
 let longestWord = '';
 let lastWordGenerationTime = 0;
@@ -144,7 +145,8 @@ function startGame() {
 
 function resetGame() {
     gameStarted = false;
-    wordBankCopy = [...wordBank];
+    wordBankCopy = wordBank.toSorted(() => Math.random() - 0.5);
+    if (timerObj.classList.contains('blink')) timerObj.classList.remove('blink');    
     randomWordObj.innerText = '';
     timerObj.innerText = '---';
     startObj.innerText = START;
@@ -177,6 +179,9 @@ function startTiming() {
     timer = setInterval (() => {
         timerObj.innerText = formatTimer(seconds);
         seconds--;
+
+        if (seconds < 5 ) timerObj.classList.add('blink');
+
         if (seconds < 0) {
             let percentage = hits * 100 / wordBank.length
             scores.push(new Score(now(), hits, percentage.toFixed(2)));
