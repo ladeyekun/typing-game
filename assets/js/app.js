@@ -89,7 +89,7 @@ let lastWordGenerationTime = 0;
 let fastestTime = 0;
 
 let gameStarted = false;
-let totalGameTime = 20;
+let totalGameTime = 10;
 let hits = 0;
 const START = 'start';
 const RESTART = 'restart';
@@ -134,8 +134,10 @@ function startGame() {
         gameSound.play();
         startObj.innerText = RESTART;
         startTiming();
-        getRandomWords();
-        enableInput();
+        setTimeout(() => {
+            getRandomWords();
+            enableInput();    
+        }, 1000);
     } else 
      restartGame();
 }
@@ -267,4 +269,9 @@ function dialogContent() {
 function now() {
     return new Date();
 }
+
+function sleep(callback, milliseconds) {
+    setTimeout(callback, milliseconds);
+}
+
 
