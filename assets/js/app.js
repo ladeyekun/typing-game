@@ -174,6 +174,15 @@ function restartGame() {
     }
 }
 
+function endGame() {
+    let percentage = hits * 100 / wordBank.length
+    scores.push(new Score(now(), hits, percentage.toFixed(2)));
+    dialogContent();
+    stopSound(gameSound);
+    resetGame();
+    clearInterval(timer);
+}
+
 function startTiming() {
     let seconds = totalGameTime;
     timer = setInterval (() => {
@@ -183,12 +192,7 @@ function startTiming() {
         if (seconds < 5 ) timerObj.classList.add('blink');
 
         if (seconds < 0) {
-            let percentage = hits * 100 / wordBank.length
-            scores.push(new Score(now(), hits, percentage.toFixed(2)));
-            dialogContent();
-            stopSound(gameSound);
-            resetGame();
-            clearInterval(timer);
+            endGame();
         }
     }, 1000);
 }
@@ -209,6 +213,7 @@ function enableInput() {
 }
 
 function getRandomWords() {
+    if (wordBankCopy.length === 0) endGame();
     let word = wordBankCopy[getRandomNumber(1, wordBankCopy.length) - 1];
     wordBankCopy = wordBankCopy.filter(element => element !== word);
     words.push(word);
