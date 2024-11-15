@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="author" content="Lateef Adeyekun">
+        <meta name="description" content="Template">
+        <meta name="keywords" content="Typing, game, keyboard">
+        <title>Typing game</title>
+        <link rel="icon" href="./assets/img/favicon.png" type="image/x-icon">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Kode+Mono:wght@400..700&family=Share+Tech+Mono&family=Syne+Mono&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous" referrerpolicy="no-referrer">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/mrspecht/cdn/reset.css" media="all">
+        <link rel="stylesheet" href="./assets/css/style.css" media="all">
+        <script src="./assets/js/app.js" defer></script>
+    </head>
+    <body>
+        <main>
+            <section class="container grid grid-center">
+                <div class="game-container glass-effect grid gap-30">
+                    <div class="row title flex flex-center">
+                        <h2 class="game-name">Turbo typist</h2>
+                    </div>
+                    <div class="row timer flex flex-center">
+                        <p>
+                            <i class="fa-solid fa-stopwatch"></i>
+                            <span>---</span>
+                        </p>
+                    </div>
+                    <div class="row random-words">
+                        <p class="center"></p>
+                    </div>
+                    <div class="row hits">
+                        <p class="center">
+                            <span class="hit-counter">0</span>hits
+                        </p>
+                    </div>
+                    <div class="row hits">
+                        <input 
+                            type="text" 
+                            class="input" 
+                            placeholder="Hit START to play" 
+                            disabled
+                        >
+                    </div>
+                    <div class="row start-game flex flex-center">
+                        <h2 class="start">
+                            <i class="fa-solid fa-power-off"></i>
+                            <span>start</span>
+                        </h2>
+                    </div>
+                    <div class="row designer">
+                        <p>Copyright &copy; Lateef Adeyekun</p>
+                    </div>
+                </div>
+            </section>
+            <div class="dialog-overlay">
+                <div class="dialog-box grid gap-10">
+                    <div class="flex">
+                        <h2>Summary</h2>
+                    </div>
+                    <div class="details grid gap-10"></div>
+                </div>
+            </div>    
+        </main>
+    </body>
+</html>
