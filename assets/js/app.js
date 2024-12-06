@@ -46,7 +46,7 @@ let progressBarIncremental = 0;
 let progressBarWidth = 0;
 
 let gameStarted = false;
-let totalGameTime = 20;
+let totalGameTime = 10;
 let hits = 0;
 const START = 'start';
 const RESTART = 'restart';
@@ -113,6 +113,7 @@ function endGame() {
         let percentage = hits * 100 / wordBank.length
         addScore(now(), hits, parseFloat(percentage.toFixed(2)));
         //scores.push(new Score(now(), hits, percentage.toFixed(2)));    
+        console.log(localStorage);
     }
     dialogContent();
     stopSound(gameSound);
@@ -127,21 +128,33 @@ function addScore(date, hits, percentage, word) {
         percentrage: percentage,
         word: word
     }
-    const scoresStr = fetchData('scores');
-    console.log(scoresStr);
-    if (scoresStr.length > 0) {
-        
-    }
-
+    const arr = fetchData('scores');
+    arr.unshift(scoreObj);
+    storeData(arr, 'scores');
+    
     scores.push(scoreObj);
 
 }
 
 function fetchData(name) {
     if (localStorage.length > 0 && name in localStorage) {
-        return localStorage.getItem(name);
+        return JSON.parse(localStorage.getItem(name));
     }
-    return '';
+    return [];
+}
+
+function storeData(data, name) {
+    if (data.length > 0 && name.trim().length > 0) {
+        console.log(data);
+        data.sort((a, b) => {
+            if (b.hits > a.hits) return 1;
+            if (b.hits < a.hits) return -1;
+            return b.date - a.date;
+        });
+        console.log(data);
+        data.splice(8);
+        localStorage.setItem(name, JSON.stringify(data));
+    }
 }
 
 function startTiming() {
@@ -298,5 +311,6 @@ listen('click', window, (event) => {
     }
 });
 
+if ('scores' in localStorage) localStorage.removeItem('scores');
 
 
