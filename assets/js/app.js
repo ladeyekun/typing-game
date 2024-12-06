@@ -1,5 +1,8 @@
 'use strict';
 
+import { wordBank } from "./words.js";
+import { select, listen, getRandomNumber } from "./util.js";
+
 class Score {
     #date;
     #hits;
@@ -24,53 +27,6 @@ class Score {
     }
 }
 
-
-function select(selector, scope = document) {
-    return scope.querySelector(selector);
-}
-
-function listen(event, selector, callback) {
-    return selector.addEventListener(event, callback);
-}
-
-function getRandomNumber(min, max) {
-    return Math.floor(Math.random() * (max - min + 1)) + min;
-}
-
-const wordBank = [
-    'dinosaur', 'love', 'pineapple', 'calendar', 'robot', 'building',
-    'population', 'weather', 'bottle', 'history', 'dream', 'character', 'money',
-    'absolute', 'discipline', 'machine', 'accurate', 'connection', 'rainbow',
-    'bicycle', 'eclipse', 'calculator', 'trouble', 'watermelon', 'developer',
-    'philosophy', 'database', 'periodic', 'capitalism', 'abominable', 'phone',
-    'component', 'future', 'pasta', 'microwave', 'jungle', 'wallet', 'canada',
-    'velvet', 'potion', 'treasure', 'beacon', 'labyrinth', 'whisper', 'breeze',
-    'coffee', 'beauty', 'agency', 'chocolate', 'eleven', 'technology',
-    'alphabet', 'knowledge', 'magician', 'professor', 'triangle', 'earthquake',
-    'baseball', 'beyond', 'evolution', 'banana', 'perfume', 'computer',
-    'butterfly', 'discovery', 'ambition', 'music', 'eagle', 'crown',
-    'chess', 'laptop', 'bedroom', 'delivery', 'enemy', 'button', 'door', 'bird',
-    'superman', 'library', 'unboxing', 'bookstore', 'language', 'homework',
-    'beach', 'economy', 'interview', 'awesome', 'challenge', 'science',
-    'mystery', 'famous', 'league', 'memory', 'leather', 'planet', 'software',
-    'update', 'yellow', 'keyboard', 'window', 'beans', 'truck', 'sheep',
-    'blossom', 'secret', 'wonder', 'enchantment', 'destiny', 'quest', 'sanctuary',
-    'download', 'blue', 'actor', 'desk', 'watch', 'giraffe', 'brazil',
-    'audio', 'school', 'detective', 'hero', 'progress', 'winter', 'passion',
-    'rebel', 'amber', 'jacket', 'article', 'paradox', 'social', 'resort',
-    'mask', 'escape', 'promise', 'band', 'level', 'hope', 'moonlight', 'media',
-    'orchestra', 'volcano', 'guitar', 'raindrop', 'inspiration', 'diamond',
-    'illusion', 'firefly', 'ocean', 'cascade', 'journey', 'laughter', 'horizon',
-    'exploration', 'serendipity', 'infinity', 'silhouette', 'wanderlust',
-    'marvel', 'nostalgia', 'serenity', 'reflection', 'twilight', 'harmony',
-    'symphony', 'solitude', 'essence', 'melancholy', 'melody', 'vision',
-    'silence', 'whimsical', 'eternity', 'cathedral', 'embrace', 'poet', 'ricochet',
-    'mountain', 'dance', 'sunrise', 'dragon', 'adventure', 'galaxy', 'echo',
-    'fantasy', 'radiant', 'serene', 'legend', 'starlight', 'light', 'pressure',
-    'bread', 'cake', 'caramel', 'juice', 'mouse', 'charger', 'pillow', 'candle',
-    'film', 'jupiter'
-];
-
 const startBtn = select('.start');
 const startObj = select('.start span');
 const timerObj = select('.timer span');
@@ -86,8 +42,6 @@ const words = [];
 let wordBankCopy = wordBank.toSorted(() => Math.random() - 0.5);
 
 let longestWord = '';
-let lastWordGenerationTime = 0;
-let fastestTime = 0;
 let progressBarIncremental = 0;
 let progressBarWidth = 0;
 
@@ -126,7 +80,7 @@ function startGame() {
 
 function resetGame() {
     gameStarted = false;
-    const wordBankCopy = wordBank.toSorted(() => Math.random() - 0.5);
+    wordBankCopy = wordBank.toSorted(() => Math.random() - 0.5);
     if (timerObj.classList.contains('blink')) timerObj.classList.remove('blink');    
     randomWordObj.innerText = '';
     timerObj.innerText = '---';
@@ -155,12 +109,39 @@ function restartGame() {
 }
 
 function endGame() {
-    let percentage = hits * 100 / wordBank.length
-    scores.push(new Score(now(), hits, percentage.toFixed(2)));
+    if (hits > 0) {
+        let percentage = hits * 100 / wordBank.length
+        addScore(now(), hits, parseFloat(percentage.toFixed(2)));
+        //scores.push(new Score(now(), hits, percentage.toFixed(2)));    
+    }
     dialogContent();
     stopSound(gameSound);
     resetGame();
     clearInterval(timer);
+}
+
+function addScore(date, hits, percentage, word) {
+    const scoreObj = {
+        date: date,
+        hits: hits,
+        percentrage: percentage,
+        word: word
+    }
+    const scoresStr = fetchData('scores');
+    console.log(scoresStr);
+    if (scoresStr.length > 0) {
+        
+    }
+
+    scores.push(scoreObj);
+
+}
+
+function fetchData(name) {
+    if (localStorage.length > 0 && name in localStorage) {
+        return localStorage.getItem(name);
+    }
+    return '';
 }
 
 function startTiming() {
@@ -196,6 +177,7 @@ function getRandomWords() {
     if (wordBankCopy.length === 0) endGame();
     let word = wordBankCopy[getRandomNumber(1, wordBankCopy.length) - 1];
     wordBankCopy = wordBankCopy.filter(element => element !== word);
+    //updateWordBank(wordBankCopy, word);
     words.push(word);
     progressBarIncremental = getIncrementalValue(word);
     randomWordObj.innerText = word;
@@ -244,8 +226,17 @@ function dialogContent() {
     dialog.style.display = 'flex';
 }
 
+function updateWordBank(arr, word) {
+    let index = arr.indexOf(word);
+    if (index !== -1) arr.splice(index, 1);
+}
+
 function now() {
-    return new Date().getDate();
+    const date = new Date();
+    const options = { month: 'short', day: '2-digit', year: 'numeric' };
+    const formattedDate = date.toLocaleDateString('en-ca', options);
+
+    return formattedDate;
 }
 
 function sleep(callback, milliseconds) {
@@ -271,8 +262,6 @@ function getIncrementalValue(word) {
 }
 
 function updateProgressBar() {
-    console.log(`Width=${progressBarWidth}`);
-    console.log(`increment=${progressBarIncremental}`);
     if (progressBarWidth < 100) {
         progressBarWidth += progressBarIncremental;
         progressBar.style.width = `${progressBarWidth}%`;
