@@ -36,7 +36,7 @@ const inputObj = select('.input');
 const progressBar = select('.progress-bar');
 
 const dialog = select('.dialog-overlay');
-const summary = select('.details');
+const scoreDialog = select('.scores');
 const scores = [];
 const words = [];
 let wordBankCopy = wordBank.toSorted(() => Math.random() - 0.5);
@@ -46,7 +46,7 @@ let progressBarIncremental = 0;
 let progressBarWidth = 0;
 
 let gameStarted = false;
-let totalGameTime = 10;
+let totalGameTime = 15;
 let hits = 0;
 const START = 'start';
 const RESTART = 'restart';
@@ -112,26 +112,24 @@ function endGame() {
     if (hits > 0) {
         let percentage = hits * 100 / wordBank.length
         addScore(now(), hits, parseFloat(percentage.toFixed(2)));
-        //scores.push(new Score(now(), hits, percentage.toFixed(2)));    
         console.log(localStorage);
     }
-    dialogContent();
+    showScores();
     stopSound(gameSound);
     resetGame();
     clearInterval(timer);
 }
 
-function addScore(date, hits, percentage, word) {
+function addScore(date, hits, percentage) {
     const scoreObj = {
         date: date,
         hits: hits,
-        percentrage: percentage,
-        word: word
+        percentrage: percentage
     }
     const arr = fetchData('scores');
     arr.unshift(scoreObj);
     storeData(arr, 'scores');
-    
+
     scores.push(scoreObj);
 
 }
@@ -152,7 +150,7 @@ function storeData(data, name) {
             return b.date - a.date;
         });
         console.log(data);
-        data.splice(8);
+        data.splice(9);
         localStorage.setItem(name, JSON.stringify(data));
     }
 }
@@ -229,14 +227,37 @@ function updateHits(playSound = false) {
     if (playSound) hitsSound.play();
 }
 
-function dialogContent() {
-    let html = '';
-    html += `<p><strong>Hits: </strong>${hits}</p>`;
-    html += `<p><strong>Percentage: </strong>`;
-    html += `${(hits * 100 / wordBank.length).toFixed(2)}%</p>`;
-    html += `<p><strong>Longest word hit: </strong>${longestWord}</p>`;
-    summary.innerHTML = html;
-    dialog.style.display = 'flex';
+function showScores() {
+    const highestScores = fetchData('scores');
+    
+    if (highestScores.length > 0) {
+        scoreDialog.innerText = '';
+        for (const [index, score] of highestScores.entries()) {
+            const rowDiv = document.createElement('div');
+            const col1Div = document.createElement('p');
+            const col2Div = document.createElement('p');
+            const col3Div = document.createElement('p');
+
+            rowDiv.classList.add('row', 'flex', 'flex-between');
+            col1Div.classList.add('col-1');
+            col2Div.classList.add('col-2');
+            col3Div.classList.add('col-3');
+
+            col1Div.innerText = `${index + 1}`;
+            col2Div.innerText = `${score.hits.toString().padStart(3, 0)} hits`;
+            col3Div.innerText = `${score.date}`;
+
+            rowDiv.appendChild(col1Div);
+            rowDiv.appendChild(col2Div);
+            rowDiv.appendChild(col3Div);
+
+            scoreDialog.appendChild(rowDiv);
+
+           // console.log(`Index=${index}, scoreObj=${score}`);
+        }
+
+        dialog.style.display = 'block';
+    }
 }
 
 function updateWordBank(arr, word) {
