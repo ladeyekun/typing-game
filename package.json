@@ -1,0 +1,18 @@
+{
+  "name": "typing-game",
+  "version": "1.0.0",
+  "description": "Turbo typist is a small game to test how fast a player can type. The idea of \r the game is to see how many words a player can type correctly within 99secs.",
+  "main": "index.js",
+  "scripts": {
+    "start": "lite-server"
+  },
+  "keywords": [
+    "typing game",
+    "random words"
+  ],
+  "author": "Lateef Adeyekun",
+  "license": "ISC",
+  "devDependencies": {
+    "lite-server": "^2.6.1"
+  }
+}

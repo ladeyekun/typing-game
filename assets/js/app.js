@@ -77,20 +77,22 @@ const timerObj = select('.timer span');
 const randomWordObj = select('.random-words p');
 const hitsCounterObj = select('.hit-counter');
 const inputObj = select('.input');
+const progressBar = select('.progress-bar');
 
 const dialog = select('.dialog-overlay');
 const summary = select('.details');
 const scores = [];
 const words = [];
-//let wordBankCopy = [...wordBank];
 let wordBankCopy = wordBank.toSorted(() => Math.random() - 0.5);
 
 let longestWord = '';
 let lastWordGenerationTime = 0;
 let fastestTime = 0;
+let progressBarIncremental = 0;
+let progressBarWidth = 0;
 
 let gameStarted = false;
-let totalGameTime = 99;
+let totalGameTime = 20;
 let hits = 0;
 const START = 'start';
 const RESTART = 'restart';
@@ -105,29 +107,6 @@ hitsSound.type = 'audio/mp3';
 const keypressSound = new Audio('./assets/media/keyboard.mp3');
 keypressSound.type = 'audio/mp3';
 
-listen('click', startBtn, () => {
-    startGame();
-});
-
-listen('keydown', inputObj, (event) => {
-    keypressSound.play();
-    if (event.key === 'Backspace') event.preventDefault();
-    if (event.key.toLowerCase() !== randomWordObj.innerText.charAt(0)) event.preventDefault();
-});
-
-listen('input', inputObj, (event) => {
-    let char = event.data.toLowerCase();
-    if (randomWordObj.innerText.charAt(0) === char) {
-        checkWord(char);
-    }
-});
-
-listen('click', window, (event) => {
-    if (event.target === dialog) {
-        dialog.style.display = 'none';
-    }
-});
-
 function startGame() {
     if (!gameStarted) {
         resetGame();
@@ -136,7 +115,9 @@ function startGame() {
         startObj.innerText = RESTART;
         startTiming();
         setTimeout(() => {
+            removeClass(randomWordObj, 'animate');
             getRandomWords();
+            addClass(randomWordObj, 'animate');
             enableInput();    
         }, 1000);
     } else 
@@ -145,7 +126,7 @@ function startGame() {
 
 function resetGame() {
     gameStarted = false;
-    wordBankCopy = wordBank.toSorted(() => Math.random() - 0.5);
+    const wordBankCopy = wordBank.toSorted(() => Math.random() - 0.5);
     if (timerObj.classList.contains('blink')) timerObj.classList.remove('blink');    
     randomWordObj.innerText = '';
     timerObj.innerText = '---';
@@ -155,9 +136,8 @@ function resetGame() {
     updateHits();
     disableInput();
     longestWord = '';
-    fastestTime = 0;
-    lastWordGenerationTime = 0;
     words.length = 0;
+    progressBarReset();
     stopSound(gameSound);
 }
 
@@ -217,31 +197,21 @@ function getRandomWords() {
     let word = wordBankCopy[getRandomNumber(1, wordBankCopy.length) - 1];
     wordBankCopy = wordBankCopy.filter(element => element !== word);
     words.push(word);
-    timeToGetWord();
+    progressBarIncremental = getIncrementalValue(word);
     randomWordObj.innerText = word;
 }
 
-function timeToGetWord() {
-    if (lastWordGenerationTime === 0) {
-        lastWordGenerationTime = now();
-    } else {
-        let diff = (now() - lastWordGenerationTime) / 1000;
-        if (fastestTime === 0) {
-            fastestTime = diff;
-        } else {
-            fastestTime = 
-                diff < fastestTime ? diff : fastestTime;
-        }
-    }
-}
-
 function checkWord(char) {
+    updateProgressBar();
     deleteFirstLetter();
     if (randomWordObj.innerText.length === 0) {
         hits++;
         updateHits(true);
         updateLongestWord();
+        progressBarReset();
+        removeClass(randomWordObj, 'animate');
         getRandomWords();
+        addClass(randomWordObj, 'animate');
         inputObj.value = '';
     }
 }
@@ -269,19 +239,75 @@ function dialogContent() {
     html += `<p><strong>Hits: </strong>${hits}</p>`;
     html += `<p><strong>Percentage: </strong>`;
     html += `${(hits * 100 / wordBank.length).toFixed(2)}%</p>`;
-    html += `<p><strong>Fastest hit time: </strong>`;
-    html += `${fastestTime.toFixed(2)}s</p>`;
     html += `<p><strong>Longest word hit: </strong>${longestWord}</p>`;
     summary.innerHTML = html;
     dialog.style.display = 'flex';
 }
 
 function now() {
-    return new Date();
+    return new Date().getDate();
 }
 
 function sleep(callback, milliseconds) {
     setTimeout(callback, milliseconds);
 }
+
+function removeClass(selector, className) {
+    if (selector.classList.contains(className)) 
+        selector.classList.remove(className);
+}
+
+function addClass(selector, className) {
+    if (!selector.classList.contains(className))
+        selector.classList.add(className);
+}
+
+function getIncrementalValue(word) {
+    if (word.length > 0) {
+        let result = (1 / word.length * 100).toFixed(2);
+        return parseFloat(result);
+    }
+    return 0;
+}
+
+function updateProgressBar() {
+    console.log(`Width=${progressBarWidth}`);
+    console.log(`increment=${progressBarIncremental}`);
+    if (progressBarWidth < 100) {
+        progressBarWidth += progressBarIncremental;
+        progressBar.style.width = `${progressBarWidth}%`;
+    }
+}
+
+function progressBarReset() {
+    progressBarIncremental = 0;
+    progressBarWidth = 0;
+    progressBar.style.width = '0%';
+}
+
+
+listen('click', startBtn, () => {
+    startGame();
+});
+
+listen('keydown', inputObj, (event) => {
+    keypressSound.play();
+    if (event.key === 'Backspace') event.preventDefault();
+    if (event.key.toLowerCase() !== randomWordObj.innerText.charAt(0)) event.preventDefault();
+});
+
+listen('input', inputObj, (event) => {
+    let char = event.data.toLowerCase();
+    if (randomWordObj.innerText.charAt(0) === char) {
+        checkWord(char);
+    }
+});
+
+listen('click', window, (event) => {
+    if (event.target === dialog) {
+        dialog.style.display = 'none';
+    }
+});
+
 
 
