@@ -194,19 +194,19 @@ section {
     }
 }
 
-.start-game {
-    h2.start {
-        text-transform: uppercase;
-        cursor: pointer;
-        color: #fff;
-        padding: 0 20px;
-        background-color: #740774;
-        border: 1px solid #740774;
-        border-radius: 4px;
-        text-align: center;
-        line-height: 40px;
-        width: 160px;
-    }
+button, .button {
+    text-transform: uppercase;
+    cursor: pointer;
+    color: #fff;
+    padding: 0 30px;
+    background-color: #740774;
+    border: 1px solid #740774;
+    border-radius: 4px;
+    text-align: center;
+    line-height: 40px;
+    height: 40px;
+    font-size: 24px;
+    font-weight: 500;
 }
 
 .designer {
@@ -264,6 +264,21 @@ input[disabled] {
     padding: 0;
 }
 
+.view-score {
+    display: none;
+    position: fixed;
+    right: 20px;
+    top: 20px;
+    height: 40px;
+}
+
+.instruction {
+    display: block;
+    position: fixed;
+    left: 20px;
+    top: 20px;
+    height: 40px;
+}
 
   /*----------------------------------*/
 /* Dialog                         */
@@ -294,6 +309,7 @@ input[disabled] {
     h2 {
         font-size: 20px;
         font-weight: 600;
+        margin-bottom: 20px;
     }
 }
 

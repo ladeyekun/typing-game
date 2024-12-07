@@ -1,7 +1,7 @@
 'use strict';
 
 import { wordBank } from "./words.js";
-import { select, listen, getRandomNumber } from "./util.js";
+import { select, listen, getRandomNumber, create } from "./util.js";
 
 class Score {
     #date;
@@ -28,12 +28,12 @@ class Score {
 }
 
 const startBtn = select('.start');
-const startObj = select('.start span');
 const timerObj = select('.timer span');
 const randomWordObj = select('.random-words p');
 const hitsCounterObj = select('.hit-counter');
 const inputObj = select('.input');
 const progressBar = select('.progress-bar');
+const viewScoreBtn = select('.view-score');
 
 const dialog = select('.dialog-overlay');
 const scoreDialog = select('.scores');
@@ -66,7 +66,7 @@ function startGame() {
         resetGame();
         gameStarted = true;
         gameSound.play();
-        startObj.innerText = RESTART;
+        startBtn.innerText = RESTART;
         startTiming();
         setTimeout(() => {
             removeClass(randomWordObj, 'animate');
@@ -84,7 +84,7 @@ function resetGame() {
     if (timerObj.classList.contains('blink')) timerObj.classList.remove('blink');    
     randomWordObj.innerText = '';
     timerObj.innerText = '---';
-    startObj.innerText = START;
+    startBtn.innerText = START;
     inputObj.value = '';
     hits = 0;
     updateHits();
@@ -231,33 +231,45 @@ function showScores() {
     const highestScores = fetchData('scores');
     
     if (highestScores.length > 0) {
+        viewScoreBtn.style.display = 'none';
         scoreDialog.innerText = '';
+        
+        loadScores(scoreDialog, 'Rank', 'Hits', 'Date', true);
+
         for (const [index, score] of highestScores.entries()) {
-            const rowDiv = document.createElement('div');
-            const col1Div = document.createElement('p');
-            const col2Div = document.createElement('p');
-            const col3Div = document.createElement('p');
-
-            rowDiv.classList.add('row', 'flex', 'flex-between');
-            col1Div.classList.add('col-1');
-            col2Div.classList.add('col-2');
-            col3Div.classList.add('col-3');
-
-            col1Div.innerText = `${index + 1}`;
-            col2Div.innerText = `${score.hits.toString().padStart(3, 0)} hits`;
-            col3Div.innerText = `${score.date}`;
-
-            rowDiv.appendChild(col1Div);
-            rowDiv.appendChild(col2Div);
-            rowDiv.appendChild(col3Div);
-
-            scoreDialog.appendChild(rowDiv);
-
-           // console.log(`Index=${index}, scoreObj=${score}`);
+            loadScores(scoreDialog, index + 1, score.hits, score.date);
         }
 
         dialog.style.display = 'block';
     }
+}
+
+function loadScores(score, col1, col2, col3, heading = false) {
+    const rowDiv = create('div');
+    const col1Div = create('p');
+    const col2Div = create('p');
+    const col3Div = create('p');
+
+    rowDiv.classList.add('row', 'flex', 'flex-between');
+    col1Div.classList.add('col-1');
+    col2Div.classList.add('col-2');
+    col3Div.classList.add('col-3');
+
+    if (heading) {
+        col1Div.innerHTML = `<strong>${col1}</strong>`;
+        col2Div.innerHTML = `<strong>${col2}</strong>`;
+        col3Div.innerHTML = `<strong>${col3}</strong>`;    
+    } else {
+        col1Div.innerText = `${col1}`;
+        col2Div.innerText = `${col2.toString().padStart(3, 0)}`;
+        col3Div.innerText = `${col3}`;    
+    }
+
+    rowDiv.appendChild(col1Div);
+    rowDiv.appendChild(col2Div);
+    rowDiv.appendChild(col3Div);
+
+    score.appendChild(rowDiv);
 }
 
 function updateWordBank(arr, word) {
@@ -329,9 +341,18 @@ listen('input', inputObj, (event) => {
 listen('click', window, (event) => {
     if (event.target === dialog) {
         dialog.style.display = 'none';
+        if (fetchData('scores').length > 0) viewScoreBtn.style.display = 'block';
     }
 });
 
-if ('scores' in localStorage) localStorage.removeItem('scores');
+listen('load', window, () => {
+    if (fetchData('scores').length > 0) viewScoreBtn.style.display = 'block';
+});
+
+listen('click', viewScoreBtn, () => {
+    showScores();
+});
+
+//if ('scores' in localStorage) localStorage.removeItem('scores');
 
 

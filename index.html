@@ -54,9 +54,7 @@
                         >
                     </div>
                     <div class="row start-game flex flex-center">
-                        <h2 class="start">
-                            <span>start</span>
-                        </h2>
+                        <button class="start">start</button>
                     </div>
                     <div class="row designer">
                         <p>Copyright &copy; Lateef Adeyekun</p>
@@ -70,11 +68,48 @@
                     </div>
                 </div>
             </div>
+            <div class="view-score">
+                <button>View scores</button>
+            </div>
+            <div class="instruction">
+                <button>Instruction</button>
+            </div>
             <div class="instruction-dialog">
                 <dialog>
-
+                    <h2>Instruction/h2>
+                    <p>
+                        The aim of this is to see how many words you can type
+                        correctly before the time runs out.
+                    </p>
+                    <p>
+                        To play the game, you must click on the 'START' button.
+                        You will see a word and you are expected to type the 
+                        word in correctly to proceed to another word.
+                    </p>
+                    <p>
+                        For every correctly typed work, you will earn a hit.
+                        The game also tracks the top 9 highest achieved hits
+                        and show it at the end of the game.
+                    </p>
+                    <p>
+                        The game ends either when the game timed out or when 
+                        you typed in all available words. You can restart the 
+                        game before timing out by clicking on the 'RESTART' 
+                        button, and this will reset the timer and hits counter
+                        (please note that restarting the game does not add to 
+                        the scoring as the game ended prematurely).
+                    </p>
+                    <p>
+                        You are only able to view the scores when there is no 
+                        active game or at the end of each game. If you see and 
+                        click on 'VIEW SCORES' button, it will show the top 
+                        nine highest scores
+                    </p>
+                    <div>
+                        <button>close</button>
+                    </div>
                 </dialog>
-            </div>    
+                </div>    
         </main>
     </body>
 </html>
