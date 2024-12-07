@@ -2,8 +2,9 @@
 
 ## Introduction
 
-Turbo typist is a small game to test how fast a player can type. The idea of 
-the game is to see how many words a player can type correctly within 99secs. 
+Turbo typist is a small web browser-based game to test how fast a player can 
+type. The idea of the game is to see how many words a player can type 
+correctly within 99secs. 
 
 Each successful word will count as a hit with a sound indicating the player made
 a hit. A new word is provided to the player for another opportunity to hit and 
@@ -18,7 +19,9 @@ come to typing in the words.
 The game in itself has a simple user interface with minima interaction from 
 the player to start the game. To play the game, the player click on the START 
 button and the timer starts counting down, while the player is expected to use 
-their keyboard to type in the presented words correctly
+their keyboard to type in the presented words correctly.
+
+At the end of each game, the top nine scores are displayed.
 
 ## Technologies used for this project 
 * HTML5
