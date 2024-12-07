@@ -82,7 +82,6 @@ body {
 
 main {
     height: var(--app-page-height);
-    /*background: #fff url(../img/bg3.jpg) center center / cover no-repeat;*/
     color: #fff;
 }
 
@@ -153,7 +152,6 @@ section {
 .progress-bar-container {
     width: 100%;
     height: 10px;
-    /*background-color: #e0e0e0;*/
     border-radius: 0 0 5px 5px;
     overflow: hidden;
 }
@@ -287,24 +285,36 @@ input[disabled] {
 .dialog-overlay {
     display: none; 
     position: fixed;
+    inset: 0 0 0 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0 0 0 / 10%);
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.instruction-dialog {
+    display: none; 
+    position: fixed;
     inset: 0 20px 0 0;
     width: 100%;
     height: 100%;
     background: rgba(0 0 0 / 10%);
     justify-content: center;
     align-items: center;
+    z-index: 1000;
 }
 
 .dialog-box {
     position: fixed;
     right: 0;
-    /*background: var(--app-background-color);*/
+    top: 0;
     padding: 20px;
-    /*border-radius: 8px;*/
     width: 300px;
     height: 100%;
     box-shadow: 0 4px 8px rgba(0 0 0 / 10%);
-    z-index: 1000;
+    z-index: 1;
 
     h2 {
         font-size: 20px;
@@ -312,6 +322,28 @@ input[disabled] {
         margin-bottom: 20px;
     }
 }
+
+.dialog-box-instr {
+    position: fixed;
+    padding: 20px;
+    width: 350px;
+    left: 0;
+    top: 0;
+    height: 100%;
+    box-shadow: 0 4px 8px rgba(0 0 0 / 10%);
+    animation: 0.25s ease-in-out slide;
+    overflow: hidden;
+    z-index: 1;
+
+    h2 {
+        margin-bottom: 15px;
+    }
+
+    p {
+        margin-bottom: 15px;
+    }
+}
+
 
 .scores {
     font-size: 16px;

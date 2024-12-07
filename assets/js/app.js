@@ -34,19 +34,20 @@ const hitsCounterObj = select('.hit-counter');
 const inputObj = select('.input');
 const progressBar = select('.progress-bar');
 const viewScoreBtn = select('.view-score');
-
+const instructionBtn = select('.instruction');
+const instruction = select('.instruction-dialog');
 const dialog = select('.dialog-overlay');
 const scoreDialog = select('.scores');
 const scores = [];
 const words = [];
-let wordBankCopy = wordBank.toSorted(() => Math.random() - 0.5);
+const wordBankCopy = wordBank.toSorted(() => Math.random() - 0.5);
 
 let longestWord = '';
 let progressBarIncremental = 0;
 let progressBarWidth = 0;
 
 let gameStarted = false;
-let totalGameTime = 15;
+let totalGameTime = 20;
 let hits = 0;
 const START = 'start';
 const RESTART = 'restart';
@@ -80,7 +81,7 @@ function startGame() {
 
 function resetGame() {
     gameStarted = false;
-    wordBankCopy = wordBank.toSorted(() => Math.random() - 0.5);
+    wordBankCopy.sort(() => Math.random() - 0.5);
     if (timerObj.classList.contains('blink')) timerObj.classList.remove('blink');    
     randomWordObj.innerText = '';
     timerObj.innerText = '---';
@@ -93,6 +94,7 @@ function resetGame() {
     words.length = 0;
     progressBarReset();
     stopSound(gameSound);
+    clearInterval(timer);
 }
 
 function stopSound(sound) {
@@ -103,7 +105,6 @@ function stopSound(sound) {
 function restartGame() {
     if (gameStarted) {
         resetGame();
-        clearInterval(timer);
         startGame();
     }
 }
@@ -112,12 +113,13 @@ function endGame() {
     if (hits > 0) {
         let percentage = hits * 100 / wordBank.length
         addScore(now(), hits, parseFloat(percentage.toFixed(2)));
-        console.log(localStorage);
     }
-    showScores();
+    setTimeout(() => {
+        showScores();
+    }, 1000);
+    
     stopSound(gameSound);
     resetGame();
-    clearInterval(timer);
 }
 
 function addScore(date, hits, percentage) {
@@ -143,13 +145,11 @@ function fetchData(name) {
 
 function storeData(data, name) {
     if (data.length > 0 && name.trim().length > 0) {
-        console.log(data);
         data.sort((a, b) => {
             if (b.hits > a.hits) return 1;
             if (b.hits < a.hits) return -1;
             return b.date - a.date;
         });
-        console.log(data);
         data.splice(9);
         localStorage.setItem(name, JSON.stringify(data));
     }
@@ -185,10 +185,12 @@ function enableInput() {
 }
 
 function getRandomWords() {
-    if (wordBankCopy.length === 0) endGame();
-    let word = wordBankCopy[getRandomNumber(1, wordBankCopy.length) - 1];
-    wordBankCopy = wordBankCopy.filter(element => element !== word);
-    //updateWordBank(wordBankCopy, word);
+    if (wordBankCopy.length === words.length) endGame();
+    let word = '';
+    do {
+        word = wordBankCopy[getRandomNumber(1, wordBankCopy.length) - 1];
+    } while (words.includes(word));
+
     words.push(word);
     progressBarIncremental = getIncrementalValue(word);
     randomWordObj.innerText = word;
@@ -233,7 +235,6 @@ function showScores() {
     if (highestScores.length > 0) {
         viewScoreBtn.style.display = 'none';
         scoreDialog.innerText = '';
-        
         loadScores(scoreDialog, 'Rank', 'Hits', 'Date', true);
 
         for (const [index, score] of highestScores.entries()) {
@@ -241,6 +242,8 @@ function showScores() {
         }
 
         dialog.style.display = 'block';
+    } else {
+
     }
 }
 
@@ -270,11 +273,6 @@ function loadScores(score, col1, col2, col3, heading = false) {
     rowDiv.appendChild(col3Div);
 
     score.appendChild(rowDiv);
-}
-
-function updateWordBank(arr, word) {
-    let index = arr.indexOf(word);
-    if (index !== -1) arr.splice(index, 1);
 }
 
 function now() {
@@ -343,16 +341,26 @@ listen('click', window, (event) => {
         dialog.style.display = 'none';
         if (fetchData('scores').length > 0) viewScoreBtn.style.display = 'block';
     }
+    if (event.target === instruction) {
+        instruction.style.display = 'none';
+        instructionBtn.style.display = 'block';
+    }    
 });
 
 listen('load', window, () => {
-    if (fetchData('scores').length > 0) viewScoreBtn.style.display = 'block';
+    if (fetchData('scores').length > 0){
+        viewScoreBtn.style.display = 'block';
+    }
+    instructionBtn.style.display = 'block';
 });
 
 listen('click', viewScoreBtn, () => {
     showScores();
 });
 
-//if ('scores' in localStorage) localStorage.removeItem('scores');
+listen('click', instructionBtn, () => {
+    instructionBtn.style.display = 'none';
+    instruction.style.display = 'block';
+});
 
 
