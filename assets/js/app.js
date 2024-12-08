@@ -65,6 +65,8 @@ keypressSound.type = 'audio/mp3';
 function startGame() {
     if (!gameStarted) {
         resetGame();
+        instructionBtn.style.display = 'none';
+        viewScoreBtn.style.display = 'none';
         gameStarted = true;
         gameSound.play();
         startBtn.innerText = RESTART;
@@ -117,9 +119,11 @@ function endGame() {
     setTimeout(() => {
         showScores();
     }, 1000);
-    
+
     stopSound(gameSound);
     resetGame();
+    viewScoreBtn.style.display = 'block';
+    instructionBtn.style.display = 'block';
 }
 
 function addScore(date, hits, percentage) {
